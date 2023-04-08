@@ -1,15 +1,26 @@
 const { ctrlWrapper } = require("../utils");
-const contacts = require("../models");
+const { Contact } = require("../models");
 const { HttpError } = require("../helpers");
 
 const getListContacts = async (req, res) => {
-  const result = await contacts.listContacts();
+  const result = await Contact.find();
+  if (!result) {
+    throw HttpError(404, `Request failed`);
+  }
+  res.json(result);
+};
+
+const getAllPhones = async (req, res) => {
+  const result = await Contact.find({}, "name phone");
+  if (!result) {
+    throw HttpError(404, `Request failed`);
+  }
   res.json(result);
 };
 
 const getByIdContact = async (req, res) => {
   const { id } = req.params;
-  const result = await contacts.getContactById(id);
+  const result = await Contact.findById(id);
   if (!result) {
     throw HttpError(404, `Contact with ${id} not found`);
   }
@@ -17,14 +28,16 @@ const getByIdContact = async (req, res) => {
 };
 
 const addNewContact = async (req, res) => {
-  const result = await contacts.addContact(req.body);
+  const result = await Contact.create(req.body);
+  if (!result) {
+    throw HttpError(404, `Creation failed`);
+  }
   res.status(201).json(result);
 };
 
 const deleteContact = async (req, res) => {
   const { id } = req.params;
-  const result = await contacts.removeContact(id);
-  console.log(result);
+  const result = await Contact.findByIdAndDelete(id);
   if (!result) {
     throw HttpError(404, `Contact with ${id} not found`);
   }
@@ -33,8 +46,16 @@ const deleteContact = async (req, res) => {
 
 const updateContactById = async (req, res) => {
   const { id } = req.params;
-  const result = await contacts.updateContact(id, req.body);
-  console.log(result);
+  const result = await Contact.findByIdAndUpdate(id, req.body, { new: true });
+  if (!result) {
+    throw HttpError(404, `Contact with ${id} not found`);
+  }
+  res.json(result);
+};
+
+const updateFavoriteById = async (req, res) => {
+  const { id } = req.params;
+  const result = await Contact.findByIdAndUpdate(id, req.body, { new: true });
   if (!result) {
     throw HttpError(404, `Contact with ${id} not found`);
   }
@@ -43,8 +64,10 @@ const updateContactById = async (req, res) => {
 
 module.exports = {
   getListContacts: ctrlWrapper(getListContacts),
+  getAllPhones: ctrlWrapper(getAllPhones),
   getByIdContact: ctrlWrapper(getByIdContact),
   addNewContact: ctrlWrapper(addNewContact),
   deleteContact: ctrlWrapper(deleteContact),
   updateContactById: ctrlWrapper(updateContactById),
+  updateFavoriteById: ctrlWrapper(updateFavoriteById),
 };
