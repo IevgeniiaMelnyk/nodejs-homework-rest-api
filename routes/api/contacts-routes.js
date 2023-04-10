@@ -1,6 +1,6 @@
 const express = require("express");
 
-const ctrl = require("../../controllers");
+const { contacts } = require("../../controllers");
 
 const { validateBody } = require("../../utils");
 
@@ -10,22 +10,22 @@ const {
 
 const router = express.Router();
 
-router.get("/", ctrl.getListContacts);
+router.get("/", contacts.getListContacts);
 
-router.get("/phone", ctrl.getAllPhones);
+router.get("/phone", contacts.getAllPhones);
 
-router.get("/:id", ctrl.getByIdContact);
+router.get("/:id", contacts.getByIdContact);
 
-router.post("/", validateBody(addSchema), ctrl.addNewContact);
+router.post("/", validateBody(addSchema), contacts.addNewContact);
 
-router.put("/:id", validateBody(addSchema), ctrl.updateContactById);
+router.put("/:id", validateBody(addSchema), contacts.updateContactById);
 
 router.patch(
   "/:id/favorite",
   validateBody(updateFavoriteSchema),
-  ctrl.updateFavoriteById
+  contacts.updateFavoriteById
 );
 
-router.delete("/:id", ctrl.deleteContact);
+router.delete("/:id", contacts.deleteContact);
 
 module.exports = router;
