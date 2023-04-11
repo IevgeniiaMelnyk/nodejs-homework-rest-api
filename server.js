@@ -20,12 +20,3 @@ const connectDB = async (DB_HOST, PORT) => {
   }
 };
 connectDB(DB_HOST, PORT);
-
-// mongoose
-//   .connect(DB_HOST)
-//   .then(() =>
-//     app.listen(PORT, () => {
-//       console.log(`Server running. Use our API on port: ${PORT}`);
-//     })
-//   )
-//   .catch((error) => error.message);
