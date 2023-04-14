@@ -4,6 +4,8 @@ var validator = require("validator");
 
 const { handleMongooseError } = require("../utils");
 
+const subscriptionList = ["starter", "pro", "business"];
+
 const userSchema = new Schema(
   {
     name: {
@@ -26,6 +28,15 @@ const userSchema = new Schema(
       minlength: 6,
       required: [true, "password mast be exist, min-length 6"],
     },
+    subscription: {
+      type: String,
+      enum: subscriptionList,
+      required: true,
+    },
+    token: {
+      type: String,
+      default: "",
+    },
   },
   { versionKey: false, timestamps: true }
 );
@@ -43,6 +54,9 @@ const registerSchema = Joi.object({
     })
     .required(),
   password: Joi.string().min(6).required(),
+  subscription: Joi.string()
+    .valid(...subscriptionList)
+    .required(),
 });
 
 const loginSchema = Joi.object({
@@ -57,9 +71,16 @@ const loginSchema = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
+const updateSubscriptionSchema = Joi.object({
+  subscription: Joi.string()
+    .valid(...subscriptionList)
+    .required(),
+});
+
 const userSchemas = {
   registerSchema,
   loginSchema,
+  updateSubscriptionSchema,
 };
 
 const User = model("user", userSchema);
