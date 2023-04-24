@@ -2,7 +2,7 @@ const express = require("express");
 
 const { validateBody } = require("../../utils");
 
-const { authenticate } = require("../../middlewares");
+const { authenticate, upload } = require("../../middlewares");
 
 const { auth } = require("../../controllers");
 
@@ -19,6 +19,13 @@ router.post("/login", validateBody(loginSchema), auth.loginUser);
 router.get("/current", authenticate, auth.getCurrentUser);
 
 router.post("/logout", authenticate, auth.logoutUser);
+
+router.patch(
+  "/avatars",
+  authenticate,
+  upload.single("avatar"),
+  auth.updateAvatar
+);
 
 router.patch(
   "/:email",
