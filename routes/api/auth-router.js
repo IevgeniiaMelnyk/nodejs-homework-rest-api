@@ -7,12 +7,25 @@ const { authenticate, upload } = require("../../middlewares");
 const { auth } = require("../../controllers");
 
 const {
-  userSchemas: { registerSchema, loginSchema, updateSubscriptionSchema },
+  userSchemas: {
+    registerSchema,
+    loginSchema,
+    emailSchema,
+    updateSubscriptionSchema,
+  },
 } = require("../../models");
 
 const router = express.Router();
 
 router.post("/register", validateBody(registerSchema), auth.registerUser);
+
+router.get("/verify/:verificationToken", auth.verifyUser);
+
+router.post(
+  "/resend-verify-email",
+  validateBody(emailSchema),
+  auth.resendVerifyEmail
+);
 
 router.post("/login", validateBody(loginSchema), auth.loginUser);
 
